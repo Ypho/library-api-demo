@@ -1,0 +1,206 @@
+openapi: 3.0.0
+info:
+  title: Library Demo API
+  version: '1.0'
+  description: A demonstration API of a library system
+  contact:
+    name: Ivo Geersen
+    url: 'https://ypho.nl'
+    email: ivo@ypho.nl
+servers:
+  - url: 'http://localhost:8081/api'
+    description: local
+  - url: 'http://localhost:3100'
+    description: mock server
+paths:
+  /:
+    get:
+      operationId: get-routes
+      summary: All available routes
+      description: Shows all available routes and their supported methods
+      tags:
+        - Miscellaneous
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              example:
+                '/api':
+                  ['GET', 'HEAD']
+                '/api/members':
+                  ['GET', 'HEAD', 'POST']
+
+  /members:
+    get:
+      operationId: get-members
+      summary: List members
+      description: Returns a list of all registered members
+      tags:
+        - Members
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/memberObject'
+    post:
+      operationId: post-members
+      summary: Create new member
+      description: Creates a new library member
+      tags:
+        - Members
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                address:
+                  type: string
+                zipcode:
+                  type: string
+                city:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                phone:
+                  type: string
+              required:
+                - firstName
+                - lastName
+                - address
+                - zipcode
+                - city
+                - email
+                - password
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/memberObject'
+  '/members/{id}':
+    get:
+      operationId: get-members-id
+      summary: Get single member
+      description: Returns a member object
+      tags:
+        - Members
+      parameters:
+        - in: path
+          description: The ID of a given member
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/memberObject'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      operationId: patch-members-id
+      summary: Updates member data
+      description: Updates member information
+      tags:
+        - Members
+      parameters:
+        - in: path
+          description: The ID of a given member
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: No Content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                address:
+                  type: string
+                zipcode:
+                  type: string
+                city:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                phone:
+                  type: string
+tags:
+  - name: Miscellaneous
+  - name: Members
+
+components:
+  schemas:
+    error:
+      title: Object of a given error
+      type: object
+      properties:
+        message:
+          type: string
+          x-faker: lorem.sentence
+    memberObject:
+      title: Single members object
+      type: object
+      properties:
+        firstName:
+          type: string
+          x-faker: name.firstName
+        lastName:
+          type: string
+          x-faker: name.lastName
+        address:
+          type: string
+          x-faker: address.streetAddress
+        zipcode:
+          type: string
+          x-faker: address.zipCode
+        city:
+          type: string
+          x-faker: address.city
+        cardNumber:
+          type: integer
+          x-faker: random.number
+        email:
+          type: string
+          x-faker: internet.email
+        phone:
+          type: string
+          x-faker: phone.phoneNumber
+

@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: ./docker/api
+    ports:
+      - 8081:80
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/ash -c "php -S 0.0.0.0:80 -t public"
+
+  mock:
+    image: stoplight/prism:latest
+    ports:
+      - 3100:3100
+    volumes:
+      - ./resources/spec:/resources
+    command: mock -d -h 0.0.0.0 -p 3100 /resources/apispec.yaml
+
+  docs:
+    image: redocly/redoc:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./resources/spec/:/usr/share/nginx/html/spec/
+    environment:
+      - SPEC_URL=spec/apispec.yaml
