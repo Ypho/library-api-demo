@@ -168,6 +168,64 @@ tags:
 
 components:
   schemas:
+    links:
+      title: Links for navigation
+      type: object
+      properties:
+        first:
+          description: 'URL to first page'
+          example: 'url-to-api/resource?page=1'
+          type: string
+        last:
+          description: 'URL to last page'
+          example: 'url-to-api/resource?page=10'
+          type: string
+        prev:
+          description: 'URL to previous page'
+          example: 'url-to-api/resource?page=3'
+          type: string
+        next:
+          description: 'URL to next page'
+          example: 'url-to-api/resource?page=5'
+          type: string
+    meta:
+      title: Metadata for collection
+      type: object
+      properties:
+        current_page:
+          example: 4
+          type: integer
+        from:
+          example: 31
+          type: integer
+        last_page:
+          example: 10
+          type: integer
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              label:
+                type: string
+              active:
+                type: boolean
+        path:
+          example: 'url-to-api/resource'
+          type: string
+        per_page:
+          example: 10
+          type: integer
+        to:
+          example: 40
+          type: integer
+        total:
+          example: 1000
+          type: integer
+
+
     error:
       title: Object of a given error
       type: object
@@ -203,4 +261,3 @@ components:
         phone:
           type: string
           x-faker: phone.phoneNumber
-
